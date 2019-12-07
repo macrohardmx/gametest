@@ -1,0 +1,9 @@
+[package]
+name = "gametest"
+version = "0.1.0"
+authors = ["Ricardo Delfin <me@rdelfin.com>"]
+edition = "2018"
+
+[dependencies]
+ggez = "0.5.1"
+nalgebra = "0.18.1"
