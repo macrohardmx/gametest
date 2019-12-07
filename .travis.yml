@@ -1,0 +1,15 @@
+language: rust
+
+jobs:
+  include:
+    - os: linux
+      dist: bionic
+    - os: windows
+before_install:
+  - if [ $TRAVIS_OS_NAME = "linux" ]; then sudo apt install -y libasound2-dev libudev-dev; fi
+addons:
+  apt:
+    update: true
+rust:
+  - stable
+cache: cargo
