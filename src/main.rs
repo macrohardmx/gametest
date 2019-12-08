@@ -14,6 +14,7 @@ use std::rc::Rc;
 use objects::background::Background;
 use objects::camera::Camera;
 use objects::interface::GameObject;
+use objects::move_data::UserController;
 use objects::spaceship::Spaceship;
 
 fn main() {
@@ -48,14 +49,16 @@ fn main() {
 
 struct MyGame {
     camera: Camera,
-    spaceship: Rc<RefCell<Spaceship>>,
     game_objects: Vec<Rc<RefCell<dyn GameObject>>>,
     cam_speed: Vector2<f32>,
 }
 
 impl MyGame {
     pub fn new(ctx: &mut Context, screen_res: &Point2<f32>) -> GameResult<MyGame> {
-        let spaceship = Rc::new(RefCell::new(Spaceship::new(&Vector2::new(10.0, 10.0))?));
+        let spaceship = Rc::new(RefCell::new(Spaceship::new(
+            &Vector2::new(10.0, 10.0),
+            Rc::new(UserController::new(150.0, 1.5)),
+        )?));
         let background = Rc::new(RefCell::new(Background::new(
             ctx,
             screen_res,
@@ -63,7 +66,6 @@ impl MyGame {
         )?));
         Ok(MyGame {
             game_objects: vec![background.clone(), spaceship.clone()],
-            spaceship,
             camera: Camera::new(
                 &Vector2::new(-100.0, -100.0),
                 &Vector2::new(screen_res.x, screen_res.y),
@@ -105,18 +107,6 @@ impl EventHandler for MyGame {
 
         match keycode {
             // Spaceship Movement
-            KeyCode::A => {
-                self.spaceship.borrow_mut().rotate(-1.0);
-            }
-            KeyCode::D => {
-                self.spaceship.borrow_mut().rotate(1.0);
-            }
-            KeyCode::W => {
-                self.spaceship.borrow_mut().move_by(1.0);
-            }
-            KeyCode::S => {
-                self.spaceship.borrow_mut().move_by(-1.0);
-            }
             // Camera Movement
             KeyCode::Up => {
                 self.cam_speed.y = -3.0;
@@ -140,19 +130,6 @@ impl EventHandler for MyGame {
 
     fn key_up_event(&mut self, _ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods) {
         match keycode {
-            // Spaceship movement
-            KeyCode::A => {
-                self.spaceship.borrow_mut().rotate(0.0);
-            }
-            KeyCode::D => {
-                self.spaceship.borrow_mut().rotate(0.0);
-            }
-            KeyCode::W => {
-                self.spaceship.borrow_mut().move_by(0.0);
-            }
-            KeyCode::S => {
-                self.spaceship.borrow_mut().move_by(0.0);
-            }
             // Camera movement
             KeyCode::Up => {
                 self.cam_speed.y = 0.0;
