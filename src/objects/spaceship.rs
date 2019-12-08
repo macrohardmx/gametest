@@ -1,45 +1,32 @@
 use crate::objects::camera::Camera;
 use crate::objects::interface::GameObject;
-use crate::objects::move_data::MoveData;
+use crate::objects::move_data::{MoveController, MoveData};
 use ggez::graphics::{self, Color, DrawMode, Mesh};
 use ggez::{Context, GameResult};
 use nalgebra::{self, Vector2};
+use std::rc::Rc;
 
 pub struct Spaceship {
     move_data: MoveData,
-    max_speed: f32,
-    max_rotation: f32,
-    fwd_speed: f32,
+    move_controller: Rc<dyn MoveController>,
 }
 
 impl Spaceship {
-    pub fn new(starting_pos: &Vector2<f32>) -> GameResult<Spaceship> {
+    pub fn new(
+        starting_pos: &Vector2<f32>,
+        move_controller: Rc<dyn MoveController>,
+    ) -> GameResult<Spaceship> {
         Ok(Spaceship {
             move_data: MoveData::new(starting_pos, 0.0),
-            max_speed: 150.0,
-            max_rotation: 1.5,
-            fwd_speed: 0.0,
+            move_controller,
         })
-    }
-
-    pub fn forwards(&self) -> Vector2<f32> {
-        Vector2::new(self.move_data.angle.cos(), self.move_data.angle.sin())
-    }
-
-    pub fn rotate(&mut self, speed: f32) {
-        self.move_data.rot_speed = speed.signum() * speed.abs().min(1.0) * self.max_rotation;
-    }
-
-    pub fn move_by(&mut self, speed: f32) {
-        self.fwd_speed = speed.signum() * speed.abs().min(1.0) * self.max_speed;
     }
 }
 
 impl GameObject for Spaceship {
     fn update(&mut self, ctx: &mut Context) -> GameResult {
-        self.move_data.velocity = self.forwards() * self.fwd_speed;
-        self.move_data.update(ctx)?;
-        Ok(())
+        self.move_controller.update(ctx, &mut self.move_data)?;
+        self.move_data.update(ctx)
     }
 
     fn draw(&mut self, ctx: &mut Context, camera: &Camera) -> GameResult {
