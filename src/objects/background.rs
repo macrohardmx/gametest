@@ -2,7 +2,7 @@ use crate::objects::camera::Camera;
 use crate::objects::interface::GameObject;
 use crate::objects::move_data::MoveData;
 
-use ggez::graphics::{DrawParam, Image};
+use ggez::graphics::Image;
 use ggez::{graphics, Context, GameResult};
 use nalgebra::{Point2, Vector2};
 

@@ -2,7 +2,7 @@ mod objects;
 
 use ggez::conf::{WindowMode, WindowSetup};
 use ggez::event::{self, quit, EventHandler, KeyCode, KeyMods};
-use ggez::graphics::{Color, DrawParam};
+use ggez::graphics::Color;
 use ggez::{graphics, Context, ContextBuilder, GameResult};
 use nalgebra::{Point2, Vector2};
 
@@ -12,7 +12,6 @@ use std::path;
 use std::rc::Rc;
 
 use objects::background::Background;
-use objects::bullet::Bullet;
 use objects::camera::Camera;
 use objects::interface::GameObject;
 use objects::spaceship::Spaceship;
@@ -51,8 +50,6 @@ struct MyGame {
     camera: Camera,
     spaceship: Rc<RefCell<Spaceship>>,
     game_objects: Vec<Rc<RefCell<dyn GameObject>>>,
-    bullets: Vec<Bullet>,
-    screen_res: Point2<f32>,
     cam_speed: Vector2<f32>,
 }
 
@@ -67,8 +64,6 @@ impl MyGame {
         Ok(MyGame {
             game_objects: vec![background.clone(), spaceship.clone()],
             spaceship,
-            bullets: vec![],
-            screen_res: Point2::new(screen_res.x, screen_res.y),
             camera: Camera::new(
                 &Vector2::new(-100.0, -100.0),
                 &Vector2::new(screen_res.x, screen_res.y),
@@ -80,19 +75,6 @@ impl MyGame {
 
 impl EventHandler for MyGame {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
-        for bullet in &mut self.bullets[..] {
-            bullet.update()?;
-        }
-
-        // Iterate back to front so removed items don't cause issues
-        // for idx in (0..self.bullets.len()).rev() {
-        //     let pos = self.bullets[idx].current_position();
-        //     if pos.x < 0.0 || pos.x > self.screen_res.x || pos.y < 0.0 || pos.y > self.screen_res.y
-        //     {
-        //         self.bullets.remove(idx);
-        //     }
-        // }
-
         self.camera.move_by(&self.cam_speed);
 
         for obj_cell in &mut self.game_objects {
@@ -104,11 +86,6 @@ impl EventHandler for MyGame {
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
         graphics::clear(ctx, Color::from_rgb(100, 149, 237));
-
-        for bullet in self.bullets.iter() {
-            graphics::draw(ctx, bullet, DrawParam::new())?;
-        }
-
         for obj_cell in &mut self.game_objects {
             obj_cell.borrow_mut().draw(ctx, &self.camera)?;
         }
@@ -127,12 +104,6 @@ impl EventHandler for MyGame {
         }
 
         match keycode {
-            // KeyCode::Space => {
-            //     self.bullets.push(Bullet::new(
-            //         self.spaceship.current_position(),
-            //         self.spaceship.direction(),
-            //     ));
-            // }
             // Spaceship Movement
             KeyCode::A => {
                 self.spaceship.borrow_mut().rotate(-1.0);
