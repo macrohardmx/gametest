@@ -1,4 +1,5 @@
 # Gametest
+[![Build Status](https://travis-ci.org/macrohardmx/gametest.svg?branch=master)](https://travis-ci.org/macrohardmx/gametest)
 
 This is my experiment into rust game development.
 
