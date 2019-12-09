@@ -6,13 +6,13 @@ This is my experiment into rust game development.
 
 ## Running and Compiling
 
-# Windows
+### Windows
 To run, all you need to do is install `rust` and `cargo` and run:
 ```
 $ cargo run
 ```
 
-# Ubuntu
+### Ubuntu
 They're pretty similar to those for Windows, but you need to install these dependencies
 first:
 
