@@ -57,7 +57,7 @@ impl MyGame {
     pub fn new(ctx: &mut Context, screen_res: &Point2<f32>) -> GameResult<MyGame> {
         let spaceship = Rc::new(RefCell::new(Spaceship::new(
             &Vector2::new(10.0, 10.0),
-            Rc::new(UserController::new(150.0, 1.5)),
+            Rc::new(UserController::new(150.0)),
         )?));
         let background = Rc::new(RefCell::new(Background::new(
             ctx,

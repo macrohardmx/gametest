@@ -35,12 +35,11 @@ pub trait MoveController {
 
 pub struct UserController {
     speed: f32,
-    rot_speed: f32,
 }
 
 impl UserController {
-    pub fn new(speed: f32, rot_speed: f32) -> UserController {
-        UserController { speed, rot_speed }
+    pub fn new(speed: f32) -> UserController {
+        UserController { speed }
     }
 
     fn forwards(&self, move_data: &mut MoveData) -> Vector2<f32> {
@@ -50,22 +49,25 @@ impl UserController {
 
 impl MoveController for UserController {
     fn update(&self, ctx: &mut Context, move_data: &mut MoveData) -> GameResult {
-        let mut dir = 0.0;
-        move_data.rot_speed = 0.0;
+        let mut dir = Vector2::new(0.0, 0.0);
 
         if keyboard::is_key_pressed(ctx, KeyCode::W) && !keyboard::is_key_pressed(ctx, KeyCode::S) {
-            dir = self.speed;
+            dir.y = -1.0;
         } else if keyboard::is_key_pressed(ctx, KeyCode::S) {
-            dir = -self.speed;
+            dir.y = 1.0;
         }
 
         if keyboard::is_key_pressed(ctx, KeyCode::D) && !keyboard::is_key_pressed(ctx, KeyCode::A) {
-            move_data.rot_speed = self.rot_speed;
+            dir.x = 1.0;
         } else if keyboard::is_key_pressed(ctx, KeyCode::A) {
-            move_data.rot_speed = -self.rot_speed;
+            dir.x = -1.0;
         }
 
-        move_data.velocity = self.forwards(move_data) * dir;
+        if dir.norm() == 0.0 {
+            move_data.velocity = dir;
+        } else {
+            move_data.velocity = dir / dir.norm() * self.speed;
+        }
         Ok(())
     }
 }
