@@ -6,24 +6,24 @@ use ggez::{Context, GameResult};
 use nalgebra::{self, Vector2};
 use std::rc::Rc;
 
-pub struct Spaceship {
+pub struct Player {
     move_data: MoveData,
     move_controller: Rc<dyn MoveController>,
 }
 
-impl Spaceship {
+impl Player {
     pub fn new(
         starting_pos: &Vector2<f32>,
         move_controller: Rc<dyn MoveController>,
-    ) -> GameResult<Spaceship> {
-        Ok(Spaceship {
+    ) -> GameResult<Player> {
+        Ok(Player {
             move_data: MoveData::new(starting_pos, 0.0),
             move_controller,
         })
     }
 }
 
-impl GameObject for Spaceship {
+impl GameObject for Player {
     fn update(&mut self, ctx: &mut Context) -> GameResult {
         self.move_controller.update(ctx, &mut self.move_data)?;
         self.move_data.update(ctx)
