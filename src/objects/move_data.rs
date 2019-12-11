@@ -20,6 +20,10 @@ impl MoveData {
         }
     }
 
+    pub fn forwards(&self) -> Vector2<f32> {
+        Vector2::new(self.angle.cos(), self.angle.sin())
+    }
+
     pub fn update(&mut self, ctx: &mut Context) -> GameResult {
         let delta = timer::delta(ctx);
         let time_secs = (delta.as_secs() as f32) + (delta.subsec_millis() as f32 / 1000.0);
@@ -40,10 +44,6 @@ pub struct UserController {
 impl UserController {
     pub fn new(speed: f32) -> UserController {
         UserController { speed }
-    }
-
-    fn forwards(&self, move_data: &mut MoveData) -> Vector2<f32> {
-        Vector2::new(move_data.angle.cos(), move_data.angle.sin())
     }
 }
 
