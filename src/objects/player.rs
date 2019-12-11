@@ -15,7 +15,7 @@ impl Player {
     pub fn new(starting_pos: &Vector2<f32>) -> GameResult<Player> {
         Ok(Player {
             move_data: MoveData::new(starting_pos, 0.0),
-            move_controller: Rc::new(UserController::new(150.0)),
+            move_controller: Rc::new(UserController::new(500.0, 0.87)),
         })
     }
 }

@@ -39,11 +39,17 @@ pub trait MoveController {
 
 pub struct UserController {
     speed: f32,
+    // Inertia goes from 0.0 to 1.0, where 0.0 means zero resistence (immediately goes full speed)
+    // and 1.0 means full resistence (the object won't move)
+    inertia: f32,
 }
 
 impl UserController {
-    pub fn new(speed: f32) -> UserController {
-        UserController { speed }
+    pub fn new(speed: f32, inertia: f32) -> UserController {
+        UserController {
+            speed,
+            inertia: inertia.max(0.0).min(1.0),
+        }
     }
 }
 
@@ -63,11 +69,15 @@ impl MoveController for UserController {
             dir.x = -1.0;
         }
 
-        if dir.norm() == 0.0 {
-            move_data.velocity = dir;
+        let target_velocity = if dir.norm() == 0.0 {
+            dir
         } else {
-            move_data.velocity = dir / dir.norm() * self.speed;
-        }
+            dir / dir.norm() * self.speed
+        };
+
+        let diff_velocity = target_velocity - move_data.velocity;
+
+        move_data.velocity += diff_velocity * (1.0 - self.inertia);
         Ok(())
     }
 }
