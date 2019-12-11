@@ -14,7 +14,6 @@ use std::rc::Rc;
 use objects::background::Background;
 use objects::camera::Camera;
 use objects::interface::GameObject;
-use objects::move_data::UserController;
 use objects::player::Player;
 
 fn main() {
@@ -55,10 +54,7 @@ struct MyGame {
 
 impl MyGame {
     pub fn new(ctx: &mut Context, screen_res: &Point2<f32>) -> GameResult<MyGame> {
-        let player = Rc::new(RefCell::new(Player::new(
-            &Vector2::new(10.0, 10.0),
-            Rc::new(UserController::new(150.0)),
-        )?));
+        let player = Rc::new(RefCell::new(Player::new(&Vector2::new(10.0, 10.0))?));
         let background = Rc::new(RefCell::new(Background::new(
             ctx,
             screen_res,
