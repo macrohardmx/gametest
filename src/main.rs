@@ -14,8 +14,7 @@ use std::rc::Rc;
 use objects::background::Background;
 use objects::camera::Camera;
 use objects::interface::GameObject;
-use objects::move_data::UserController;
-use objects::spaceship::Spaceship;
+use objects::player::Player;
 
 fn main() {
     let resource_dir = match env::var("CARGO_MANIFEST_DIR") {
@@ -55,17 +54,14 @@ struct MyGame {
 
 impl MyGame {
     pub fn new(ctx: &mut Context, screen_res: &Point2<f32>) -> GameResult<MyGame> {
-        let spaceship = Rc::new(RefCell::new(Spaceship::new(
-            &Vector2::new(10.0, 10.0),
-            Rc::new(UserController::new(150.0, 1.5)),
-        )?));
+        let player = Rc::new(RefCell::new(Player::new(&Vector2::new(10.0, 10.0))?));
         let background = Rc::new(RefCell::new(Background::new(
             ctx,
             screen_res,
             "/rancho_relaxo.jpg",
         )?));
         Ok(MyGame {
-            game_objects: vec![background.clone(), spaceship.clone()],
+            game_objects: vec![background.clone(), player.clone()],
             camera: Camera::new(
                 &Vector2::new(-100.0, -100.0),
                 &Vector2::new(screen_res.x, screen_res.y),
@@ -106,7 +102,6 @@ impl EventHandler for MyGame {
         }
 
         match keycode {
-            // Spaceship Movement
             // Camera Movement
             KeyCode::Up => {
                 self.cam_speed.y = -3.0;

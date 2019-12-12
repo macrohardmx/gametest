@@ -1,29 +1,26 @@
 use crate::objects::camera::Camera;
 use crate::objects::interface::GameObject;
-use crate::objects::move_data::{MoveController, MoveData};
+use crate::objects::move_data::{MoveController, MoveData, UserController};
 use ggez::graphics::{self, Color, DrawMode, Mesh};
 use ggez::{Context, GameResult};
 use nalgebra::{self, Vector2};
 use std::rc::Rc;
 
-pub struct Spaceship {
+pub struct Player {
     move_data: MoveData,
     move_controller: Rc<dyn MoveController>,
 }
 
-impl Spaceship {
-    pub fn new(
-        starting_pos: &Vector2<f32>,
-        move_controller: Rc<dyn MoveController>,
-    ) -> GameResult<Spaceship> {
-        Ok(Spaceship {
+impl Player {
+    pub fn new(starting_pos: &Vector2<f32>) -> GameResult<Player> {
+        Ok(Player {
             move_data: MoveData::new(starting_pos, 0.0),
-            move_controller,
+            move_controller: Rc::new(UserController::new(500.0, 0.87)),
         })
     }
 }
 
-impl GameObject for Spaceship {
+impl GameObject for Player {
     fn update(&mut self, ctx: &mut Context) -> GameResult {
         self.move_controller.update(ctx, &mut self.move_data)?;
         self.move_data.update(ctx)
