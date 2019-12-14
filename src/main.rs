@@ -1,7 +1,7 @@
 mod objects;
 
-use ggez::conf::{WindowMode, WindowSetup};
-use ggez::event::{self, quit, EventHandler, KeyCode, KeyMods};
+use ggez::conf::{FullscreenType, WindowMode, WindowSetup};
+use ggez::event::{self, EventHandler};
 use ggez::graphics::Color;
 use ggez::{graphics, Context, ContextBuilder, GameResult};
 use nalgebra::{Point2, Vector2};
@@ -30,14 +30,20 @@ fn main() {
         ContextBuilder::new("my_game", "Ricardo Delfin <me@rdelfin.com>")
             .add_resource_path(resource_dir)
             .window_setup(WindowSetup::default().title("Game Test (rdelfin)"))
-            .window_mode(WindowMode::default().dimensions(800.0, 600.0))
+            .window_mode(
+                WindowMode::default()
+                    .dimensions(1280.0, 720.0)
+                    .fullscreen_type(FullscreenType::True),
+            )
             .build()
             .expect("Could not create ggez context!");
+
+    // To get the window res we need to do some... Ungodly things
 
     // Create an instance of the event handler
     // Usually, you want to provide it with the
     // context object to use when setting your game up
-    let mut game = MyGame::new(&mut ctx, &Point2::new(800.0, 600.0)).unwrap();
+    let mut game = MyGame::new(&mut ctx, &Point2::new(1280.0, 720.0)).unwrap();
 
     // Run!
     match event::run(&mut ctx, &mut event_loop, &mut game) {
@@ -60,6 +66,7 @@ impl MyGame {
             screen_res,
             "/rancho_relaxo.jpg",
         )?));
+        println!("Screen size: {}", screen_res);
         Ok(MyGame {
             game_objects: vec![background.clone(), player.clone()],
             camera: Camera::new(
@@ -88,58 +95,5 @@ impl EventHandler for MyGame {
             obj_cell.borrow_mut().draw(ctx, &self.camera)?;
         }
         graphics::present(ctx)
-    }
-
-    fn key_down_event(
-        &mut self,
-        ctx: &mut Context,
-        keycode: KeyCode,
-        _keymods: KeyMods,
-        repeat: bool,
-    ) {
-        if repeat {
-            return;
-        }
-
-        match keycode {
-            // Camera Movement
-            KeyCode::Up => {
-                self.cam_speed.y = -3.0;
-            }
-            KeyCode::Down => {
-                self.cam_speed.y = 3.0;
-            }
-            KeyCode::Left => {
-                self.cam_speed.x = -3.0;
-            }
-            KeyCode::Right => {
-                self.cam_speed.x = 3.0;
-            }
-            // Quit
-            KeyCode::Escape => {
-                quit(ctx);
-            }
-            _ => {}
-        }
-    }
-
-    fn key_up_event(&mut self, _ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods) {
-        match keycode {
-            // Camera movement
-            KeyCode::Up => {
-                self.cam_speed.y = 0.0;
-            }
-            KeyCode::Down => {
-                self.cam_speed.y = 0.0;
-            }
-            KeyCode::Left => {
-                self.cam_speed.x = 0.0;
-            }
-            KeyCode::Right => {
-                self.cam_speed.x = 0.0;
-            }
-
-            _ => {}
-        }
     }
 }
