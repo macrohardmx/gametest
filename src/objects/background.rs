@@ -12,12 +12,11 @@ pub struct Background {
 }
 
 impl Background {
-    pub fn new(ctx: &mut Context, screen_res: &Point2<f32>, path: &str) -> GameResult<Background> {
+    pub fn new(ctx: &mut Context, _screen_res: &Point2<f32>, path: &str) -> GameResult<Background> {
         let image = Image::new(ctx, path)?;
-        let dims: Vector2<f32> = screen_res - Point2::new(0.0, 0.0);
         Ok(Background {
             image,
-            move_data: MoveData::new(&(-dims), 0.0),
+            move_data: MoveData::new(&Vector2::new(0.0, 0.0), 0.0),
         })
     }
 }

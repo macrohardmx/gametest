@@ -30,14 +30,15 @@ fn main() {
         ContextBuilder::new("my_game", "Ricardo Delfin <me@rdelfin.com>")
             .add_resource_path(resource_dir)
             .window_setup(WindowSetup::default().title("Game Test (rdelfin)"))
-            .window_mode(WindowMode::default().dimensions(800.0, 600.0))
+            .window_mode(WindowMode::default().fullscreen_type(FullscreenType::True))
             .build()
             .expect("Could not create ggez context!");
 
     // Create an instance of the event handler
     // Usually, you want to provide it with the
     // context object to use when setting your game up
-    let mut game = MyGame::new(&mut ctx, &Point2::new(800.0, 600.0)).unwrap();
+    let (w, h) = graphics::drawable_size(&ctx);
+    let mut game = MyGame::new(&mut ctx, &Point2::new(w, h)).unwrap();
 
     // Run!
     match event::run(&mut ctx, &mut event_loop, &mut game) {
@@ -54,7 +55,7 @@ struct MyGame {
 
 impl MyGame {
     pub fn new(ctx: &mut Context, screen_res: &Point2<f32>) -> GameResult<MyGame> {
-        let player = Rc::new(RefCell::new(Player::new(&Vector2::new(10.0, 10.0))?));
+        let player = Rc::new(RefCell::new(Player::new(&Vector2::new(100.0, 100.0))?));
         let background = Rc::new(RefCell::new(Background::new(
             ctx,
             screen_res,
@@ -63,7 +64,7 @@ impl MyGame {
         Ok(MyGame {
             game_objects: vec![background.clone(), player.clone()],
             camera: Camera::new(
-                &Vector2::new(-100.0, -100.0),
+                &Vector2::new(screen_res.x / 2.0, screen_res.y / 2.0),
                 &Vector2::new(screen_res.x, screen_res.y),
             ),
             cam_speed: Vector2::new(0.0, 0.0),
