@@ -1,6 +1,6 @@
 mod objects;
 
-use ggez::conf::{WindowMode, WindowSetup};
+use ggez::conf::{FullscreenType, WindowMode, WindowSetup};
 use ggez::event::{self, quit, EventHandler, KeyCode, KeyMods};
 use ggez::graphics::Color;
 use ggez::{graphics, Context, ContextBuilder, GameResult};
@@ -37,8 +37,7 @@ fn main() {
     // Create an instance of the event handler
     // Usually, you want to provide it with the
     // context object to use when setting your game up
-    let (w, h) = graphics::drawable_size(&ctx);
-    let mut game = MyGame::new(&mut ctx, &Point2::new(w, h)).unwrap();
+    let mut game = MyGame::new(&mut ctx).unwrap();
 
     // Run!
     match event::run(&mut ctx, &mut event_loop, &mut game) {
@@ -54,11 +53,14 @@ struct MyGame {
 }
 
 impl MyGame {
-    pub fn new(ctx: &mut Context, screen_res: &Point2<f32>) -> GameResult<MyGame> {
+    pub fn new(ctx: &mut Context) -> GameResult<MyGame> {
+        let (w, h) = graphics::drawable_size(&ctx);
+        let screen_res = Point2::new(w, h);
+
         let player = Rc::new(RefCell::new(Player::new(&Vector2::new(100.0, 100.0))?));
         let background = Rc::new(RefCell::new(Background::new(
             ctx,
-            screen_res,
+            &screen_res,
             "/rancho_relaxo.jpg",
         )?));
         Ok(MyGame {
