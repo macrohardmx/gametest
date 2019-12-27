@@ -1,43 +1,40 @@
+use crate::objects::background::Background;
 use crate::objects::camera::Camera;
 use crate::objects::interface::GameObject;
-use ggez::{Context, GameResult};
-use nalgebra::Vector2;
-use std::cell::RefCell;
-use std::rc::Rc;
+use crate::objects::player::Player;
+use ggez::graphics::Color;
+use ggez::{graphics, Context, GameResult};
+use nalgebra::{Point2, Vector2};
 
-pub struct LevelWrapper<T> {
-    objects: Vec<Rc<RefCell<dyn GameObject>>>,
+pub struct Level {
+    player: Player,
     camera: Camera,
-    level: T,
+    background: Background,
 }
 
-impl<T: Level> LevelWrapper<T> {
-    pub fn new(screen_dims: Vector2<f32>, level: T) -> Level {
-        Level {
-            objects: vec![],
-            camera: Camera::new(
-                Vector2::new(-screen_dims.x / 2.0, -screen_dims.y / 2.0),
-                screen_dims,
-            ),
-            level,
-        }
+impl Level {
+    pub fn new(ctx: &mut Context) -> GameResult<Level> {
+        let (w, h) = graphics::drawable_size(&ctx);
+
+        Ok(Level {
+            player: Player::new(&Vector2::new(w / 2.0, h / 2.0))?,
+            camera: Camera::new(&Vector2::new(w / 2.0, h / 2.0), &Vector2::new(w, h)),
+            background: Background::new(
+                ctx,
+                &Point2::new(h, h),
+                &Point2::new(w / 2.0, h / 2.0),
+                "/bg.png",
+            )?,
+        })
     }
 
-    pub fn load(&mut self) -> GameResult {}
-
-    pub fn update(&mut self) -> GameResult {
-        for obj_cell in self.objects {
-            obj_cell.borrow_mut().update(ctx)?;
-        }
+    pub fn update(&mut self, ctx: &mut Context) -> GameResult {
+        self.player.update(ctx)
     }
 
-    pub fn draw(&mut self) -> GameResult {
-        for obj_cell in self.objects {
-            obj_cell.borrow_mut().draw(ctx, &self.camera)?;
-        }
+    pub fn draw(&mut self, ctx: &mut Context) -> GameResult {
+        graphics::clear(ctx, Color::from_rgb(158, 45, 0));
+        self.background.draw(ctx)?;
+        self.player.draw(ctx, &self.camera)
     }
-}
-
-pub trait Level {
-    fn load(&mut self, &mut ctx);
 }

@@ -1,32 +1,38 @@
-use crate::objects::camera::Camera;
-use crate::objects::interface::GameObject;
-use crate::objects::move_data::MoveData;
-
-use ggez::graphics::Image;
+use ggez::graphics::{DrawParam, Image};
 use ggez::{graphics, Context, GameResult};
 use nalgebra::{Point2, Vector2};
 
 pub struct Background {
     image: Image,
-    move_data: MoveData,
+    target_res: Point2<f32>,
+    center: Point2<f32>,
 }
 
 impl Background {
-    pub fn new(ctx: &mut Context, _screen_res: &Point2<f32>, path: &str) -> GameResult<Background> {
+    pub fn new(
+        ctx: &mut Context,
+        target_res: &Point2<f32>,
+        center: &Point2<f32>,
+        path: &str,
+    ) -> GameResult<Background> {
         let image = Image::new(ctx, path)?;
         Ok(Background {
             image,
-            move_data: MoveData::new(&Vector2::new(0.0, 0.0), 0.0),
+            target_res: target_res.clone(),
+            center: center.clone(),
         })
     }
-}
 
-impl GameObject for Background {
-    fn update(&mut self, _ctx: &mut Context, _camera: &Camera) -> GameResult {
-        Ok(())
-    }
-
-    fn draw(&mut self, ctx: &mut Context, camera: &Camera) -> GameResult {
-        graphics::draw(ctx, &self.image, camera.to_view_coords(&self.move_data))
+    pub fn draw(&mut self, ctx: &mut Context) -> GameResult {
+        let scale = Vector2::new(
+            self.target_res.x / self.image.width() as f32,
+            self.target_res.y / self.image.height() as f32,
+        );
+        let dest_pos = self.center - (self.target_res / 2.0);
+        graphics::draw(
+            ctx,
+            &self.image,
+            DrawParam::new().dest(Point2::from(dest_pos)).scale(scale),
+        )
     }
 }
