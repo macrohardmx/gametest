@@ -8,15 +8,15 @@ pub struct Camera {
 }
 
 impl Camera {
-    pub fn new(center: &Vector2<f32>, screen_dims: &Vector2<f32>) -> Camera {
+    pub fn new<T: Into<Vector2<f32>>>(center: T, screen_dims: T) -> Camera {
         Camera {
-            center: center.clone(),
-            screen_dims: screen_dims.clone(),
+            center: center.into(),
+            screen_dims: screen_dims.into(),
         }
     }
 
-    pub fn move_by(&mut self, diff: &Vector2<f32>) {
-        self.center += diff;
+    pub fn move_by<T: Into<Vector2<f32>>>(&mut self, diff: T) {
+        self.center += diff.into();
     }
 
     pub fn to_view_coords(&self, move_data: &MoveData) -> DrawParam {

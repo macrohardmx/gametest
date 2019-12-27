@@ -18,7 +18,7 @@ impl Level {
 
         Ok(Level {
             player: Player::new(&Vector2::new(w / 2.0, h / 2.0))?,
-            camera: Camera::new(&Vector2::new(w / 2.0, h / 2.0), &Vector2::new(w, h)),
+            camera: Camera::new(Vector2::new(w / 2.0, h / 2.0), Vector2::new(w, h)),
             background: Background::new(
                 ctx,
                 &Point2::new(h, h),
