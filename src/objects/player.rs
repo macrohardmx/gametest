@@ -15,7 +15,7 @@ impl Player {
     pub fn new(starting_pos: &Vector2<f32>) -> GameResult<Player> {
         Ok(Player {
             move_data: MoveData::new(starting_pos, 0.0),
-            move_controller: Rc::new(UserController::new(500.0, 0.87)),
+            move_controller: Rc::new(UserController::new(0.5, 0.87)),
         })
     }
 }
@@ -31,10 +31,10 @@ impl GameObject for Player {
         let shape = Mesh::new_polygon(
             ctx,
             DrawMode::fill(),
-            &[[-25.0, -25.0], [50.0, 0.0], [-25.0, 25.0], [0.0, 0.0]],
+            &[[-0.025, -0.025], [0.05, 0.0], [-0.025, 0.025], [0.0, 0.0]],
             Color::from_rgb(0, 255, 255),
         )?;
-        let draw_param = camera.to_view_coords(&self.move_data);
+        let draw_param = camera.to_proj_coords(&self.move_data);
         graphics::draw(ctx, &shape, draw_param)
     }
 }

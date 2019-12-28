@@ -17,8 +17,8 @@ impl Level {
         let (w, h) = graphics::drawable_size(&ctx);
 
         Ok(Level {
-            player: Player::new(&Vector2::new(w / 2.0, h / 2.0))?,
-            camera: Camera::new(Vector2::new(w / 2.0, h / 2.0), Vector2::new(w, h)),
+            player: Player::new(&Vector2::new(0.0, 0.0))?,
+            camera: Camera::new(Vector2::new(w / 2.0, h / 2.0), Vector2::new(h, h)),
             background: Background::new(
                 ctx,
                 &Point2::new(h, h),

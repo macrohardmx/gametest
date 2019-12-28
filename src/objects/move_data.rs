@@ -61,9 +61,9 @@ impl MoveController for UserController {
         // Keyboard bindings to movement
         let mut dir = Vector2::new(0.0, 0.0);
         if keyboard::is_key_pressed(ctx, KeyCode::W) && !keyboard::is_key_pressed(ctx, KeyCode::S) {
-            dir.y = -1.0;
-        } else if keyboard::is_key_pressed(ctx, KeyCode::S) {
             dir.y = 1.0;
+        } else if keyboard::is_key_pressed(ctx, KeyCode::S) {
+            dir.y = -1.0;
         }
 
         if keyboard::is_key_pressed(ctx, KeyCode::D) && !keyboard::is_key_pressed(ctx, KeyCode::A) {
