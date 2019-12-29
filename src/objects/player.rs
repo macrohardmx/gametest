@@ -12,7 +12,7 @@ pub struct Player {
 }
 
 impl Player {
-    pub fn new(starting_pos: &Vector2<f32>) -> GameResult<Player> {
+    pub fn new<T: Into<Vector2<f32>>>(starting_pos: T) -> GameResult<Player> {
         Ok(Player {
             move_data: MoveData::new(starting_pos, 0.0),
             move_controller: Rc::new(UserController::new(0.5, 0.87)),

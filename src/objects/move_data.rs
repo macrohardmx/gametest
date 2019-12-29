@@ -13,9 +13,9 @@ pub struct MoveData {
 }
 
 impl MoveData {
-    pub fn new(position: &Vector2<f32>, angle: f32) -> MoveData {
+    pub fn new<T: Into<Vector2<f32>>>(position: T, angle: f32) -> MoveData {
         MoveData {
-            position: position.clone(),
+            position: position.into(),
             velocity: Vector2::new(0.0, 0.0),
             angle,
             rot_speed: 0.0,
