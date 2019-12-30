@@ -34,6 +34,22 @@ impl Camera {
 
     // Converts a point from screen coordinates to world coordinates
     pub fn point_s2w(&self, p: Point2<f32>) -> Point2<f32> {
-        p + self.center - self.screen_dims / 2.0
+        let view_scale = Vector2::new(self.play_area_dims.x / 2.0, -self.play_area_dims.y / 2.0);
+        Point2::from(Vector2::new(p.x, p.y).component_mul(&view_scale) + self.center)
+    }
+
+    // Scale will default to level-based (-1 to 1) coordinates so we need to scale down
+    pub fn center_local_coords(
+        &self,
+        draw_param: DrawParam,
+        obj_size: Vector2<f32>,
+        final_size: Vector2<f32>,
+    ) -> DrawParam {
+        let norm_scale = final_size.component_div(&obj_size);
+        let center_offset = Vector2::from(draw_param.scale).component_mul(&(final_size / 2.0));
+        let old_dest = Vector2::new(draw_param.dest.x, draw_param.dest.y);
+        draw_param
+            .scale(Vector2::from(draw_param.scale).component_mul(&norm_scale))
+            .dest(Point2::from(old_dest - center_offset))
     }
 }

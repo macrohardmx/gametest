@@ -29,7 +29,7 @@ impl Level {
             )?,
             wall: WallSegment::new(
                 ctx,
-                Vector2::new(0.5, 0.5),
+                Vector2::new(0.3, 0.3),
                 Vector2::new(0.1, 0.1),
                 "/wall.png",
             )?,

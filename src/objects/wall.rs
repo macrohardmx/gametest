@@ -33,12 +33,9 @@ impl GameObject for WallSegment {
     }
 
     fn draw(&mut self, ctx: &mut Context, camera: &Camera) -> GameResult {
-        let draw_mode = camera.to_proj_coords(&self.move_data);
+        let draw_param = camera.to_proj_coords(&self.move_data);
         let img_size = Vector2::new(self.image.width() as f32, self.image.height() as f32);
-        // Scale will default to level-based (-1 to 1) coordinates so we need to scale down
-        let norm_scale = self.size.component_div(&img_size);
-        let draw_mode = draw_mode.scale(Vector2::from(draw_mode.scale).component_mul(&norm_scale));
-
-        graphics::draw(ctx, &self.image, draw_mode)
+        let draw_param = camera.center_local_coords(draw_param, img_size, self.size);
+        graphics::draw(ctx, &self.image, draw_param)
     }
 }
