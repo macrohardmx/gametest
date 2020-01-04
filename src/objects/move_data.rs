@@ -82,9 +82,7 @@ impl MoveController for UserController {
         let diff_velocity = target_velocity - move_data.velocity;
         move_data.velocity += diff_velocity * (1.0 - self.inertia);
 
-        // let mouse_pos = Vector2::new(m.x, m.y); // Transformed to Vector2 to be read by Matrix
-        // let current_angle = Matrix::angle(&mouse_pos, &move_data.position);
-
+        // Rotate player with mouse
         let mouse_pos = camera.point_s2w(Point2::from(mouse::position(ctx)));
         move_data.angle = (mouse_pos.y - move_data.position.y).atan2(mouse_pos.x - move_data.position.x);
 
