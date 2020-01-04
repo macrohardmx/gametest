@@ -23,7 +23,7 @@ impl Background {
 }
 
 impl GameObject for Background {
-    fn update(&mut self, _ctx: &mut Context) -> GameResult {
+    fn update(&mut self, _ctx: &mut Context, _camera: &Camera) -> GameResult {
         Ok(())
     }
 
