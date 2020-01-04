@@ -1,11 +1,9 @@
 use crate::objects::camera::Camera;
-use std::f64::consts;
 use ggez::event::KeyCode;
 use ggez::input::keyboard;
 use ggez::input::mouse;
 use ggez::{timer, Context, GameResult};
-use nalgebra::Vector2;
-// use nalgebra::base::Matrix;
+use nalgebra::{Vector2, Point2};
 
 pub struct MoveData {
     pub position: Vector2<f32>,
@@ -24,16 +22,15 @@ impl MoveData {
         }
     }
 
-    // Is this even needed?
-    // pub fn forwards(&self) -> Vector2<f32> {
-        // Vector2::new(self.angle.cos(), self.angle.sin())
-    // }
+    pub fn forwards(&self) -> Vector2<f32> {
+        Vector2::new(self.angle.cos(), self.angle.sin())
+    }
 
     pub fn update(&mut self, ctx: &mut Context) -> GameResult {
         let delta = timer::delta(ctx);
         let time_secs = (delta.as_secs() as f32) + (delta.subsec_millis() as f32 / 1000.0);
         self.position += self.velocity * time_secs;
-        self.angle += self.rot_speed * time_secs; // rot_speed = f32, time_secs = f32
+        self.angle += self.rot_speed * time_secs;
         Ok(())
     }
 }
@@ -85,19 +82,11 @@ impl MoveController for UserController {
         let diff_velocity = target_velocity - move_data.velocity;
         move_data.velocity += diff_velocity * (1.0 - self.inertia);
 
-        /* Mouse input to angle (aka. What the fuck am I doing???)
-        let m = mouse::position(ctx); // Type Point2
-        let mouse_pos = Vector2::new(m.x, m.y); // Transformed to Vector2 to be read by Matrix
-        let current_angle = Matrix::angle(&mouse_pos, &move_data.position); */
+        // let mouse_pos = Vector2::new(m.x, m.y); // Transformed to Vector2 to be read by Matrix
+        // let current_angle = Matrix::angle(&mouse_pos, &move_data.position);
 
-        let m = mouse::position(ctx);
-        move_data.angle = ((m.y - move_data.position.y).atan2(move_data.position.x - m.x)) * (consts::PI / 2.0) as f32;
-        /* let half_pi = (consts::PI / 2.0) as f32;
-        move_data.angle = angle * half_pi;
-        println!("{:?} : {:?}", m, half_pi); */
-        // m gives x and y in pixels. Need to 1. Find mouse pos with respect to move_data.position in 0,0
-        // 2. Find angle between mouse pos and player position with player pos as point of reference. (In radians)
-        // 3. Change move_data.rotation value to this angle.
+        let mouse_pos = camera.point_s2w(Point2::from(mouse::position(ctx)));
+        move_data.angle = (mouse_pos.y - move_data.position.y).atan2(mouse_pos.x - move_data.position.x);
 
         Ok(())
     }
