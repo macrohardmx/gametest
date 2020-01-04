@@ -1,3 +1,4 @@
+use crate::objects::camera::Camera;
 use ggez::event::KeyCode;
 use ggez::input::keyboard;
 use ggez::{timer, Context, GameResult};
@@ -34,7 +35,7 @@ impl MoveData {
 }
 
 pub trait MoveController {
-    fn update(&self, ctx: &mut Context, move_data: &mut MoveData) -> GameResult;
+    fn update(&self, ctx: &mut Context, camera: &Camera, move_data: &mut MoveData) -> GameResult;
 }
 
 pub struct UserController {
@@ -54,7 +55,7 @@ impl UserController {
 }
 
 impl MoveController for UserController {
-    fn update(&self, ctx: &mut Context, move_data: &mut MoveData) -> GameResult {
+    fn update(&self, ctx: &mut Context, camera: &Camera, move_data: &mut MoveData) -> GameResult {
         let mut dir = Vector2::new(0.0, 0.0);
 
         if keyboard::is_key_pressed(ctx, KeyCode::W) && !keyboard::is_key_pressed(ctx, KeyCode::S) {

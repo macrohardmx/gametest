@@ -76,7 +76,7 @@ impl EventHandler for MyGame {
         self.camera.move_by(&self.cam_speed);
 
         for obj_cell in &mut self.game_objects {
-            obj_cell.borrow_mut().update(ctx)?;
+            obj_cell.borrow_mut().update(ctx, &self.camera)?;
         }
 
         Ok(())

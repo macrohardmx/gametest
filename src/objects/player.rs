@@ -21,8 +21,9 @@ impl Player {
 }
 
 impl GameObject for Player {
-    fn update(&mut self, ctx: &mut Context) -> GameResult {
-        self.move_controller.update(ctx, &mut self.move_data)?;
+    fn update(&mut self, ctx: &mut Context, camera: &Camera) -> GameResult {
+        self.move_controller
+            .update(ctx, camera, &mut self.move_data)?;
         self.move_data.update(ctx)
     }
 
