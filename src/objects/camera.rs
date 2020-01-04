@@ -26,4 +26,9 @@ impl Camera {
             .dest(Point2::new(final_pos.x, final_pos.y))
             .rotation(move_data.angle)
     }
+
+    // Converts a point from screen coordinates to world coordinates
+    pub fn point_s2w(&self, p: Point2<f32>) -> Point2<f32> {
+        p - self.center + self.screen_dims / 2.0
+    }
 }
