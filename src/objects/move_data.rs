@@ -1,8 +1,9 @@
 use crate::objects::camera::Camera;
 use ggez::event::KeyCode;
 use ggez::input::keyboard;
+use ggez::input::mouse;
 use ggez::{timer, Context, GameResult};
-use nalgebra::Vector2;
+use nalgebra::{Vector2, Point2};
 
 pub struct MoveData {
     pub position: Vector2<f32>,
@@ -56,8 +57,9 @@ impl UserController {
 
 impl MoveController for UserController {
     fn update(&self, ctx: &mut Context, camera: &Camera, move_data: &mut MoveData) -> GameResult {
+        
+        // Keyboard bindings to movement
         let mut dir = Vector2::new(0.0, 0.0);
-
         if keyboard::is_key_pressed(ctx, KeyCode::W) && !keyboard::is_key_pressed(ctx, KeyCode::S) {
             dir.y = -1.0;
         } else if keyboard::is_key_pressed(ctx, KeyCode::S) {
@@ -70,6 +72,7 @@ impl MoveController for UserController {
             dir.x = -1.0;
         }
 
+        // Speed as f(inertia)
         let target_velocity = if dir.norm() == 0.0 {
             dir
         } else {
@@ -77,8 +80,12 @@ impl MoveController for UserController {
         };
 
         let diff_velocity = target_velocity - move_data.velocity;
-
         move_data.velocity += diff_velocity * (1.0 - self.inertia);
+
+        // Rotate player with mouse
+        let mouse_pos = camera.point_s2w(Point2::from(mouse::position(ctx)));
+        move_data.angle = (mouse_pos.y - move_data.position.y).atan2(mouse_pos.x - move_data.position.x);
+
         Ok(())
     }
 }
