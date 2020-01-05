@@ -37,8 +37,8 @@ impl Level {
     }
 
     pub fn update(&mut self, ctx: &mut Context) -> GameResult {
-        self.wall.update(ctx)?;
-        self.player.update(ctx)
+        self.wall.update(ctx, &self.camera)?;
+        self.player.update(ctx, &self.camera)
     }
 
     pub fn draw(&mut self, ctx: &mut Context) -> GameResult {

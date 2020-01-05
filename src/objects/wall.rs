@@ -28,7 +28,7 @@ impl WallSegment {
 }
 
 impl GameObject for WallSegment {
-    fn update(&mut self, ctx: &mut Context) -> GameResult {
+    fn update(&mut self, ctx: &mut Context, camera: &Camera) -> GameResult {
         self.move_data.update(ctx)
     }
 
