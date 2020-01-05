@@ -24,7 +24,7 @@ fn main() -> GameResult {
         ContextBuilder::new("my_game", "Ricardo Delfin <me@rdelfin.com>")
             .add_resource_path(resource_dir)
             .window_setup(WindowSetup::default().title("Game Test (rdelfin)"))
-            .window_mode(WindowMode::default().fullscreen_type(FullscreenType::True))
+            .window_mode(WindowMode::default().dimensions(1280.0, 800.0))
             .build()?;
 
     // Create an instance of the event handler
